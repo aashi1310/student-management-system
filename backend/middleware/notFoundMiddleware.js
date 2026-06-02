@@ -18,7 +18,7 @@
 const notFoundMiddleware = (req, res, next) => {
   /* Log the missed route in development for easy debugging */
   if (process.env.NODE_ENV !== 'production') {
-    console.warn(`⚠️  404 — Route not found: ${req.method} ${req.originalUrl}`);
+    console.warn(`404 - Route not found: ${req.method} ${req.originalUrl}`);
   }
 
   const err = new Error(`Route not found — ${req.method} ${req.originalUrl}`);

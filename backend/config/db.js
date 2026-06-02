@@ -22,10 +22,10 @@ const connectDB = async () => {
     });
 
     console.log(
-      `✅  MongoDB Connected Successfully — Host: ${conn.connection.host}`
+      `MongoDB Connected Successfully - Host: ${conn.connection.host}`
     );
   } catch (error) {
-    console.error(`❌  MongoDB Connection Error: ${error.message}`);
+    console.error(`MongoDB Connection Error: ${error.message}`);
     // Exit process with failure code so the host can restart the app
     process.exit(1);
   }

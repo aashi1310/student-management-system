@@ -1,199 +1,174 @@
-# 📚 Student Management System
+# Student Management System
 
-> A professional, fully-functional Student Management System built with pure **HTML5**, **CSS3**, and **Vanilla JavaScript** — no frameworks, no dependencies, no installation required.
+A professional, fully-featured, full-stack Student Management System designed to handle student academic records. The application combines a sleek, modern glassmorphism web dashboard with a secure, production-ready Node.js RESTful API and a MongoDB Atlas database.
+
+This project is tailored for portfolio showcases and internship submissions, demonstrating high-quality coding standards in both frontend and backend development.
 
 ---
 
-## 🌟 Project Overview
+## 🔧 Technical Stack
 
-The **Student Management System** is a complete CRUD (Create, Read, Update, Delete) web application designed to manage student academic records. It features a modern glassmorphism dashboard UI, dark mode, real-time search, sorting, filtering, CSV export/import, and fully persistent data via the browser's Local Storage.
+### Frontend
+- **HTML5**: Semantic document structure and accessibility guidelines (ARIA).
+- **CSS3**: Custom custom properties, grid layouts, flexbox, glassmorphism design language, and keyframe animations.
+- **JavaScript (ES6+)**: Dynamic DOM manipulation, state management, form validation, and asynchronous API calls.
 
-This project is suitable as an **internship submission** or **portfolio piece** that demonstrates professional frontend development skills.
+### Backend
+- **Node.js**: Asynchronous event-driven JavaScript runtime environment.
+- **Express.js**: Lightweight framework for building RESTful routing architectures and middlewares.
+
+### Database
+- **MongoDB Atlas**: Fully-managed cloud NoSQL database service.
+- **Mongoose**: Elegant Object Data Modeling (ODM) library for schema definition and validation.
 
 ---
 
 ## ✨ Features
 
-### Core CRUD
-| Feature | Description |
-|---|---|
-| ➕ Add Student | Register new students with full validation |
-| 👁️ View Students | See all records in a professional sortable table |
-| ✏️ Edit Student | Load record into the form, update any field |
-| 🗑️ Delete Student | Custom confirmation modal (no browser confirm()) |
-
-### Search, Sort & Filter
-- **Real-time Search** — searches across ID, Name, Email, Course, Phone
-- **Sort** — by Name, Semester, or Student ID (ascending ↑ / descending ↓)
-- **Filter** — by Semester (1–8) or view All
-
-### Dashboard Statistics
-- Total Students
-- Total Unique Courses
-- Highest Semester
-- Latest Student Added
-
-### Import / Export
-- **Export CSV** — download all records as a UTF-8 encoded CSV file
-- **Import CSV** — upload and parse a CSV file; validates data, skips duplicates
-
-### UI & UX
-- 🌙 **Dark Mode** with one-click toggle (preference saved to LocalStorage)
-- 🎨 **Glassmorphism** cards with gradient accents
-- 🍞 **Toast Notifications** — animated, auto-dismissing, stackable (Success / Error / Warning / Info)
-- 📭 **Empty State** — animated illustration shown when no records exist
-- ✅ **Form Validation** — inline error messages, real-time feedback on blur/input
-- 📱 **Fully Responsive** — works on desktop, tablet, and mobile
-- ♿ **Accessible** — semantic HTML, ARIA labels, focus management, keyboard navigation
-
----
-
-## 🔧 Technology Stack
-
-| Technology | Usage |
-|---|---|
-| HTML5 | Semantic structure, accessibility attributes |
-| CSS3 | Variables, Grid, Flexbox, Animations, Glassmorphism |
-| Vanilla JavaScript (ES6+) | CRUD logic, validation, DOM manipulation |
-| Browser Local Storage | Persistent data storage (no backend needed) |
-| Google Fonts (Inter) | Modern typography |
-
-**No frameworks. No libraries. No npm. No build tools.**
-
----
-
-## 📁 Folder Structure
-
-```
-student-management-system/
-│
-├── index.html      ← App entry point & HTML structure
-├── style.css       ← All styling (variables, layout, animations)
-├── script.js       ← All application logic (CRUD, validation, etc.)
-└── README.md       ← This file
-```
-
----
-
-## 🚀 How to Run
-
-1. **Download or clone** this repository
-2. Open the `student-management-system/` folder
-3. Double-click `index.html` — the app opens directly in your browser
-4. **No server, no npm, no installation needed.**
-
-> Works offline after the first load (Google Fonts requires internet on first visit).
-
----
-
-## 📊 Data Model
-
-```js
-{
-  id:        "STU001",          // Unique alphanumeric ID (3–15 chars)
-  name:      "Aashika Jain",   // Full name (3–50 chars, no digits)
-  email:     "aashika@gmail.com",
-  course:    "B.Tech CSE",
-  semester:  5,                 // Integer 1–8
-  phone:     "9876543210",      // Exactly 10 digits
-  createdAt: "2026-06-01"       // ISO date YYYY-MM-DD (auto-generated)
-}
-```
-
-### LocalStorage Keys
-| Key | Value |
-|---|---|
-| `students` | JSON array of all student objects |
-| `theme` | `"light"` or `"dark"` |
-
----
-
-## 🔍 Form Validation Rules
-
-| Field | Rules |
-|---|---|
-| Student ID | Required · 3–15 chars · Letters & numbers only · Must be unique |
-| Full Name | Required · 3–50 chars · No numbers allowed |
-| Email | Required · Valid email format |
-| Course | Required · Minimum 2 characters |
-| Semester | Required · Integer value 1–8 |
-| Phone | Required · Exactly 10 digits |
+- **CRUD Operations**: Add, view, edit, and delete student records with immediate database persistence.
+- **Real-time Search**: Instant keystroke search across student names, IDs, courses, emails, and phone numbers.
+- **Statistics Dashboard**: Interactive widgets summarizing total students, unique courses, highest semester, and the latest added student.
+- **Data Validation**: Real-time frontend inline feedback coupled with strict backend Mongoose schema validation.
+- **Dark Mode**: High-contrast, vibrant neon-accented dark mode with automatic browser state persistence.
+- **CSV Import / Export**: Download entire directories as formatted CSV or import bulk rosters securely with automatic duplicate skipping.
+- **Responsive UI**: Fully mobile-responsive layout optimizing readability on desktops, tablets, and smartphones.
 
 ---
 
 ## 📸 Screenshots
 
-> *(Open `index.html` in your browser to see the live application)*
+### 🖥️ Dashboard Overview
+![Dashboard Overview](screenshots/dashboard.png)
+*Modern glassmorphism statistics widgets and live interactive student data tables.*
 
-| Light Mode | Dark Mode |
-|---|---|
-| Dashboard with stats | Same dashboard in dark theme |
-| Student table with actions | Edit/Delete buttons |
-| Add form with validation | Toast notifications |
+### ➕ Add Student Modal Form
+![Add Student](screenshots/add-student.png)
+*Inline client-side validation, neat input fields, and intuitive submit controls.*
 
----
-
-## 🛣️ Future Enhancements
-
-- [ ] Pagination for large datasets
-- [ ] Print / PDF export
-- [ ] Student profile photo upload (base64 LocalStorage)
-- [ ] Advanced multi-field search with filter chips
-- [ ] Bulk delete selected rows
-- [ ] Chart / analytics view (Chart.js integration)
-- [ ] IndexedDB backend for larger storage limits
-- [ ] Offline PWA with Service Worker
+### 🌙 Dark Theme Interface
+![Dark Theme Dashboard](screenshots/dark-mode.png)
+*Aesthetically pleasing high-end dark mode styled with neon glowing accents.*
 
 ---
 
-## 🧑‍💻 JavaScript Functions Reference
+## 📡 API Reference
+
+All requests and responses use standard JSON format. The backend RESTful API listens at: `http://localhost:5000/api/students`
+
+| Method | Endpoint | Description | Request Body |
+| :--- | :--- | :--- | :--- |
+| **GET** | `/api/students` | Retrieve all student records, newest first | None |
+| **POST** | `/api/students` | Register a new student record | Student Object |
+| **PUT** | `/api/students/:id` | Update an existing student record (mutates specific fields) | Updatable fields |
+| **DELETE** | `/api/students/:id` | Permanently delete a student record by DB ID | None |
+| **GET** | `/api/students/search` | Search students using a query parameter (`?q=val`) | None |
+| **GET** | `/api/students/stats` | Retrieve aggregated dashboard counts and stats | None |
+
+### Student Object Schema
+```json
+{
+  "studentId": "STU001",
+  "name": "Aashika Jain",
+  "email": "aashika@gmail.com",
+  "course": "B.Tech CSE",
+  "semester": 5,
+  "phone": "9876543210"
+}
+```
+
+---
+
+## 📁 Folder Structure
+
+```text
+student-management-system/
+│
+├── screenshots/          ← System visual mockups
+│   ├── dashboard.png
+│   ├── add-student.png
+│   └── dark-mode.png
+│
+├── backend/              ← Node.js & Express REST API
+│   ├── config/           ← Database configuration (Mongoose)
+│   ├── controllers/      ← Request handler logic
+│   ├── middleware/       ← Global error and 404 middleware
+│   ├── models/           ← Database schemas (Mongoose)
+│   ├── routes/           ← HTTP API routing definitions
+│   ├── .env              ← Environment variables
+│   ├── server.js         ← Backend server entry point
+│   └── package.json      ← Backend dependencies
+│
+├── index.html            ← Frontend HTML5 document structure
+├── style.css             ← Frontend UI styling rules
+├── script.js             ← Frontend application logic
+├── .gitignore            ← Project repository ignore rules
+└── README.md             ← Main documentation file
+```
+
+---
+
+## 🚀 Deployment Instructions
+
+### Prerequisites
+Make sure you have [Node.js](https://nodejs.org/) installed (v16+ recommended) and a running [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) cluster.
+
+### 1. Database Connection String Setup
+Navigate to the `backend/` folder, open/create the `.env` configuration file, and add your MongoDB Atlas credentials:
+```env
+PORT=5000
+MONGO_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/sms_db?retryWrites=true&w=majority
+```
+
+### 2. Start the Backend Server
+Run the following commands in your terminal:
+```bash
+cd backend
+npm install
+npm run dev
+```
+*The server will start running on port `5000` and will log a success message upon establishing connection to MongoDB.*
+
+### 3. Open the Frontend Application
+Simply open `index.html` in any web browser of your choice. The frontend is configured to communicate with the local backend endpoint at `http://localhost:5000/api/students`.
+
+---
+
+## 🔍 Frontend Form Validation Rules
+
+| Field | Rules |
+| :--- | :--- |
+| **Student ID** | Required · Unique · Letters & numbers only · 3–15 characters |
+| **Full Name** | Required · 3–50 characters · Alphabetic characters only |
+| **Email** | Required · Valid email address formatting |
+| **Course** | Required · Minimum 2 characters |
+| **Semester** | Required · Numeric value between 1 and 8 |
+| **Phone** | Required · Exactly 10 numeric digits |
+
+---
+
+## 🧑‍💻 JavaScript Functions Reference (Frontend)
 
 | Function | Purpose |
-|---|---|
-| `loadStudents()` | Load data from LocalStorage; seed sample data if empty |
-| `saveStudents()` | Persist students array to LocalStorage |
-| `renderStudents()` | Re-build and inject table rows |
-| `buildFilteredList()` | Apply search + filter + sort to produce displayed list |
-| `addStudent()` | Create and store a new student record |
-| `updateStudent()` | Save edits to an existing student |
-| `editStudent(id)` | Populate form with student data for editing |
-| `deleteStudent(id)` | Trigger the delete confirmation modal |
-| `confirmDelete()` | Execute deletion after user confirms |
-| `validateForm()` | Run all field validators; returns `true` if valid |
-| `searchStudents()` | Update search query and re-render |
-| `filterStudents()` | Update semester filter and re-render |
-| `sortStudents(field)` | Toggle ascending/descending sort on a field |
-| `exportCSV()` | Generate and download a CSV file |
-| `importCSV(event)` | Parse an uploaded CSV and add valid records |
-| `showToast(type, title, msg)` | Show an animated toast notification |
-| `removeToast(el)` | Dismiss a toast with exit animation |
-| `showModal()` | Display the delete confirmation modal |
-| `closeModal()` | Hide the modal |
-| `toggleDarkMode()` | Switch theme and save preference |
-| `applyStoredTheme()` | Apply saved or OS-preferred theme on load |
-| `updateDashboard()` | Recalculate and update all stat cards |
-| `resetForm()` | Clear the form and return to "Add" mode |
-| `generateStudentID()` | Auto-generate next sequential Student ID |
-| `formatDate(dateStr)` | Convert YYYY-MM-DD to readable display format |
-| `escapeHTML(str)` | Sanitise strings to prevent XSS |
-| `csvEscape(val)` | Safely quote CSV field values |
-| `parseCSVLine(line)` | Parse a CSV line including quoted fields |
+| :--- | :--- |
+| `loadStudents()` | Asynchronously fetches student data from the backend database (falls back to LocalStorage if offline) |
+| `addStudent()` | Posts a new student record to the Node/Express backend |
+| `updateStudent()` | Sends a `PUT` update request to the database for editing student records |
+| `deleteStudent(id)` | Triggers deletion confirmation modals prior to making backend `DELETE` API requests |
+| `validateForm()` | Runs dynamic client-side field validation before submitting forms |
+| `exportCSV()` | Compiles active grid contents and downloads UTF-8 formatted spreadsheets |
+| `toggleDarkMode()` | Toggles high-end visual styles and saves state preferences in `LocalStorage` |
 
 ---
 
-## 👩‍💻 Author
+## 🧑‍💻 Author
 
 **Aashika Jain**
 
 - GitHub: [aashi1310](https://github.com/aashi1310)
-- Project: Student Management System — Internship-level Frontend Portfolio
+- Project: Full-Stack Student Management System — Internship Submission Portfolio
 
 ---
 
 ## 📄 License
 
-This project is open source and available under the [MIT License](LICENSE).
-
----
-
-*Built with ❤️ using HTML5, CSS3 & Vanilla JavaScript — 2026*
+This project is open-source and available under the [MIT License](LICENSE).
