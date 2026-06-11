@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="A professional Student Management System with full CRUD, search, sort, filter, dark mode, and CSV export/import. Built with pure HTML, CSS &amp; Vanilla JavaScript." />
+  <meta name="description"
+    content="A professional Student Management System with full CRUD, search, sort, filter, dark mode, and CSV export/import. Built with pure HTML, CSS &amp; Vanilla JavaScript." />
   <meta name="keywords" content="student management system, CRUD, local storage, vanilla javascript" />
   <meta name="author" content="Senior Frontend Developer" />
   <title>Student Management System — Academic Records Portal</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
 </head>
+
 <body>
 
   <!-- ===== TOAST NOTIFICATIONS CONTAINER ===== -->
@@ -21,17 +25,32 @@
   <div id="delete-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
     <div class="modal-box">
       <div class="modal-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="3 6 5 6 21 6" />
+          <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+          <path d="M10 11v6" />
+          <path d="M14 11v6" />
+          <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+        </svg>
       </div>
       <h2 id="modal-title">Delete Student Record</h2>
-      <p id="modal-message">Are you sure you want to permanently delete this student record? This action cannot be undone.</p>
+      <p id="modal-message">Are you sure you want to permanently delete this student record? This action cannot be
+        undone.</p>
       <div class="modal-actions">
         <button id="modal-cancel-btn" class="btn btn-secondary" onclick="closeModal()">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
           Cancel
         </button>
         <button id="modal-confirm-btn" class="btn btn-danger" onclick="confirmDelete()">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            aria-hidden="true">
+            <polyline points="3 6 5 6 21 6" />
+            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+          </svg>
           Delete
         </button>
       </div>
@@ -43,7 +62,11 @@
     <div class="header-inner">
       <div class="header-brand">
         <div class="header-logo" aria-hidden="true">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+            <path d="M6 12v5c3 3 9 3 12 0v-5" />
+          </svg>
         </div>
         <div class="header-title-group">
           <h1 class="header-title">Student Management System</h1>
@@ -57,12 +80,27 @@
       </nav>
       <div class="header-actions">
         <span id="current-date" class="header-date" aria-label="Current date"></span>
-        <button id="dark-mode-toggle" class="dark-toggle" onclick="toggleDarkMode()" aria-label="Toggle dark mode" title="Toggle dark mode">
+        <button id="dark-mode-toggle" class="dark-toggle" onclick="toggleDarkMode()" aria-label="Toggle dark mode"
+          title="Toggle dark mode">
           <span class="dark-toggle-icon dark-toggle-sun" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <circle cx="12" cy="12" r="5" />
+              <line x1="12" y1="1" x2="12" y2="3" />
+              <line x1="12" y1="21" x2="12" y2="23" />
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+              <line x1="1" y1="12" x2="3" y2="12" />
+              <line x1="21" y1="12" x2="23" y2="12" />
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+            </svg>
           </span>
           <span class="dark-toggle-icon dark-toggle-moon" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
           </span>
         </button>
       </div>
@@ -77,7 +115,13 @@
       <div class="stats-grid">
         <div class="stat-card" id="stat-total">
           <div class="stat-icon stat-icon-blue">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
           </div>
           <div class="stat-info">
             <span class="stat-label">Total Students</span>
@@ -86,7 +130,11 @@
         </div>
         <div class="stat-card" id="stat-courses">
           <div class="stat-icon stat-icon-purple">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+            </svg>
           </div>
           <div class="stat-info">
             <span class="stat-label">Total Courses</span>
@@ -95,7 +143,11 @@
         </div>
         <div class="stat-card" id="stat-placement">
           <div class="stat-icon stat-icon-green">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+              <polyline points="22 4 12 14.01 9 11.01" />
+            </svg>
           </div>
           <div class="stat-info">
             <span class="stat-label">Placement Eligible</span>
@@ -104,7 +156,12 @@
         </div>
         <div class="stat-card" id="stat-backlogs">
           <div class="stat-icon stat-icon-orange">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
           </div>
           <div class="stat-info">
             <span class="stat-label">With Backlogs</span>
@@ -113,7 +170,10 @@
         </div>
         <div class="stat-card" id="stat-cgpa">
           <div class="stat-icon stat-icon-blue">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+            </svg>
           </div>
           <div class="stat-info">
             <span class="stat-label">Average CGPA</span>
@@ -139,53 +199,81 @@
         </div>
         <form id="student-form" novalidate>
           <div class="form-group">
-            <label for="student-id" class="form-label">Student ID <span class="required" aria-hidden="true">*</span></label>
+            <label for="student-id" class="form-label">Student ID <span class="required"
+                aria-hidden="true">*</span></label>
             <div class="input-wrapper">
               <span class="input-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2">
+                  <rect x="2" y="7" width="20" height="14" rx="2" />
+                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                </svg>
               </span>
-              <input type="text" id="student-id" class="form-input has-icon" placeholder="e.g. STU001" autocomplete="off" aria-required="true" aria-describedby="student-id-error" maxlength="15" />
+              <input type="text" id="student-id" class="form-input has-icon" placeholder="e.g. STU001"
+                autocomplete="off" aria-required="true" aria-describedby="student-id-error" maxlength="15" />
             </div>
             <span class="form-error" id="student-id-error" role="alert"></span>
           </div>
           <div class="form-group">
-            <label for="student-name" class="form-label">Full Name <span class="required" aria-hidden="true">*</span></label>
+            <label for="student-name" class="form-label">Full Name <span class="required"
+                aria-hidden="true">*</span></label>
             <div class="input-wrapper">
               <span class="input-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
               </span>
-              <input type="text" id="student-name" class="form-input has-icon" placeholder="e.g. Aashika Jain" autocomplete="name" aria-required="true" aria-describedby="student-name-error" maxlength="50" />
+              <input type="text" id="student-name" class="form-input has-icon" placeholder="e.g. Aashika Jain"
+                autocomplete="name" aria-required="true" aria-describedby="student-name-error" maxlength="50" />
             </div>
             <span class="form-error" id="student-name-error" role="alert"></span>
           </div>
           <div class="form-group">
-            <label for="student-email" class="form-label">Email Address <span class="required" aria-hidden="true">*</span></label>
+            <label for="student-email" class="form-label">Email Address <span class="required"
+                aria-hidden="true">*</span></label>
             <div class="input-wrapper">
               <span class="input-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
               </span>
-              <input type="email" id="student-email" class="form-input has-icon" placeholder="e.g. aashika@gmail.com" autocomplete="email" aria-required="true" aria-describedby="student-email-error" />
+              <input type="email" id="student-email" class="form-input has-icon" placeholder="e.g. aashika@gmail.com"
+                autocomplete="email" aria-required="true" aria-describedby="student-email-error" />
             </div>
             <span class="form-error" id="student-email-error" role="alert"></span>
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label for="student-course" class="form-label">Course <span class="required" aria-hidden="true">*</span></label>
+              <label for="student-course" class="form-label">Course <span class="required"
+                  aria-hidden="true">*</span></label>
               <div class="input-wrapper">
                 <span class="input-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                  </svg>
                 </span>
-                <input type="text" id="student-course" class="form-input has-icon" placeholder="e.g. B.Tech CSE" autocomplete="off" aria-required="true" aria-describedby="student-course-error" />
+                <input type="text" id="student-course" class="form-input has-icon" placeholder="e.g. B.Tech CSE"
+                  autocomplete="off" aria-required="true" aria-describedby="student-course-error" />
               </div>
               <span class="form-error" id="student-course-error" role="alert"></span>
             </div>
             <div class="form-group">
-              <label for="student-semester" class="form-label">Semester <span class="required" aria-hidden="true">*</span></label>
+              <label for="student-semester" class="form-label">Semester <span class="required"
+                  aria-hidden="true">*</span></label>
               <div class="input-wrapper">
                 <span class="input-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                  </svg>
                 </span>
-                <select id="student-semester" class="form-input has-icon form-select" aria-required="true" aria-describedby="student-semester-error">
+                <select id="student-semester" class="form-input has-icon form-select" aria-required="true"
+                  aria-describedby="student-semester-error">
                   <option value="">Select Semester</option>
                   <option value="1">Semester 1</option>
                   <option value="2">Semester 2</option>
@@ -201,27 +289,37 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="student-phone" class="form-label">Phone Number <span class="required" aria-hidden="true">*</span></label>
+            <label for="student-phone" class="form-label">Phone Number <span class="required"
+                aria-hidden="true">*</span></label>
             <div class="input-wrapper">
               <span class="input-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2">
+                  <path
+                    d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+                </svg>
               </span>
-              <input type="tel" id="student-phone" class="form-input has-icon" placeholder="e.g. 9876543210" autocomplete="tel" aria-required="true" aria-describedby="student-phone-error" maxlength="10" />
+              <input type="tel" id="student-phone" class="form-input has-icon" placeholder="e.g. 9876543210"
+                autocomplete="tel" aria-required="true" aria-describedby="student-phone-error" maxlength="10" />
             </div>
             <span class="form-error" id="student-phone-error" role="alert"></span>
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label for="student-cgpa" class="form-label">CGPA <span class="required" aria-hidden="true">*</span></label>
+              <label for="student-cgpa" class="form-label">CGPA <span class="required"
+                  aria-hidden="true">*</span></label>
               <div class="input-wrapper">
-                <input type="number" id="student-cgpa" class="form-input" placeholder="e.g. 8.5" aria-required="true" step="0.01" min="0" max="10" aria-describedby="student-cgpa-error" />
+                <input type="number" id="student-cgpa" class="form-input" placeholder="e.g. 8.5" aria-required="true"
+                  step="0.01" min="0" max="10" aria-describedby="student-cgpa-error" />
               </div>
               <span class="form-error" id="student-cgpa-error" role="alert"></span>
             </div>
             <div class="form-group">
-              <label for="student-backlogs" class="form-label">Active Backlogs <span class="required" aria-hidden="true">*</span></label>
+              <label for="student-backlogs" class="form-label">Active Backlogs <span class="required"
+                  aria-hidden="true">*</span></label>
               <div class="input-wrapper">
-                <input type="number" id="student-backlogs" class="form-input" placeholder="e.g. 0" aria-required="true" min="0" aria-describedby="student-backlogs-error" />
+                <input type="number" id="student-backlogs" class="form-input" placeholder="e.g. 0" aria-required="true"
+                  min="0" aria-describedby="student-backlogs-error" />
               </div>
               <span class="form-error" id="student-backlogs-error" role="alert"></span>
             </div>
@@ -229,24 +327,34 @@
           <div class="form-group">
             <label for="student-skills" class="form-label">Skills (Comma separated)</label>
             <div class="input-wrapper">
-              <input type="text" id="student-skills" class="form-input" placeholder="e.g. React, Node, Python" aria-describedby="student-skills-error" />
+              <input type="text" id="student-skills" class="form-input" placeholder="e.g. React, Node, Python"
+                aria-describedby="student-skills-error" />
             </div>
             <span class="form-error" id="student-skills-error" role="alert"></span>
           </div>
           <div class="form-group">
             <label for="student-photo" class="form-label">Photo URL (Optional)</label>
             <div class="input-wrapper">
-              <input type="url" id="student-photo" class="form-input" placeholder="e.g. https://example.com/photo.jpg" aria-describedby="student-photo-error" />
+              <input type="url" id="student-photo" class="form-input" placeholder="e.g. https://example.com/photo.jpg"
+                aria-describedby="student-photo-error" />
             </div>
             <span class="form-error" id="student-photo-error" role="alert"></span>
           </div>
           <div class="form-actions">
             <button type="submit" id="submit-btn" class="btn btn-primary">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.5" aria-hidden="true">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
               <span id="submit-btn-text">Add Student</span>
             </button>
             <button type="button" id="reset-btn" class="btn btn-outline" onclick="resetForm()">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" aria-hidden="true">
+                <polyline points="23 4 23 10 17 10" />
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+              </svg>
               Reset
             </button>
           </div>
@@ -258,11 +366,18 @@
         <!-- Controls Row -->
         <div class="table-controls">
           <div class="search-wrapper">
-            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="search" id="search-input" class="search-input" placeholder="Search by ID, Name, Email, Course, Phone…" aria-label="Search students" oninput="searchStudents()" />
+            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input type="search" id="search-input" class="search-input"
+              placeholder="Search by ID, Name, Email, Course, Phone…" aria-label="Search students"
+              oninput="searchStudents()" />
           </div>
           <div class="filter-wrapper">
-            <select id="branch-filter" class="form-input form-select filter-select" onchange="filterStudents()" aria-label="Filter by branch">
+            <select id="branch-filter" class="form-input form-select filter-select" onchange="filterStudents()"
+              aria-label="Filter by branch">
               <option value="all">All Branches</option>
               <option value="B.Tech CSE">B.Tech CSE</option>
               <option value="B.Tech ECE">B.Tech ECE</option>
@@ -271,7 +386,8 @@
               <option value="MCA">MCA</option>
               <option value="B.Sc IT">B.Sc IT</option>
             </select>
-            <select id="semester-filter" class="form-input form-select filter-select" onchange="filterStudents()" aria-label="Filter by semester">
+            <select id="semester-filter" class="form-input form-select filter-select" onchange="filterStudents()"
+              aria-label="Filter by semester">
               <option value="all">All Semesters</option>
               <option value="1">Semester 1</option>
               <option value="2">Semester 2</option>
@@ -282,7 +398,8 @@
               <option value="7">Semester 7</option>
               <option value="8">Semester 8</option>
             </select>
-            <select id="placement-filter" class="form-input form-select filter-select" onchange="filterStudents()" aria-label="Filter by placement status">
+            <select id="placement-filter" class="form-input form-select filter-select" onchange="filterStudents()"
+              aria-label="Filter by placement status">
               <option value="all">All Statuses</option>
               <option value="Eligible">Eligible</option>
               <option value="Not Eligible">Not Eligible</option>
@@ -294,17 +411,27 @@
         <div class="sort-controls" role="group" aria-label="Sort options">
           <span class="sort-label">Sort by:</span>
           <button class="sort-btn" id="sort-name" onclick="sortStudents('name')" aria-pressed="false">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18M3 12h12M3 18h6"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" aria-hidden="true">
+              <path d="M3 6h18M3 12h12M3 18h6" />
+            </svg>
             Name
             <span class="sort-indicator" id="sort-name-icon">↕</span>
           </button>
           <button class="sort-btn" id="sort-semester" onclick="sortStudents('semester')" aria-pressed="false">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" aria-hidden="true">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+            </svg>
             Semester
             <span class="sort-indicator" id="sort-semester-icon">↕</span>
           </button>
           <button class="sort-btn" id="sort-id" onclick="sortStudents('id')" aria-pressed="false">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" aria-hidden="true">
+              <rect x="2" y="7" width="20" height="14" rx="2" />
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+            </svg>
             Student ID
             <span class="sort-indicator" id="sort-id-icon">↕</span>
           </button>
@@ -312,14 +439,27 @@
 
         <!-- Export / Import -->
         <div class="io-controls">
-          <button class="btn btn-success btn-sm" id="export-btn" onclick="exportCSV()" title="Export all records to CSV">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <button class="btn btn-success btn-sm" id="export-btn" onclick="exportCSV()"
+            title="Export all records to CSV">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
             Export CSV
           </button>
-          <label class="btn btn-info btn-sm import-label" title="Import records from CSV" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' ')this.querySelector('input').click()">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <label class="btn btn-info btn-sm import-label" title="Import records from CSV" tabindex="0" role="button"
+            onkeydown="if(event.key==='Enter'||event.key===' ')this.querySelector('input').click()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
             Import CSV
-            <input type="file" id="csv-import-input" accept=".csv" style="display:none" onchange="importCSV(event)" aria-label="Import CSV file" />
+            <input type="file" id="csv-import-input" accept=".csv" style="display:none" onchange="importCSV(event)"
+              aria-label="Import CSV file" />
           </label>
           <span id="record-count" class="record-count" aria-live="polite"></span>
         </div>
@@ -367,12 +507,17 @@
   <footer class="footer" role="contentinfo">
     <div class="footer-inner">
       <span class="footer-logo" aria-hidden="true">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          width="16" height="16">
+          <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+          <path d="M6 12v5c3 3 9 3 12 0v-5" />
+        </svg>
       </span>
-      <p>Student Management System &copy; 2026 &mdash; Built with ❤️ using HTML, CSS &amp; Vanilla JavaScript</p>
+      <p>Student Management System &copy; 2026 </p>
     </div>
   </footer>
 
   <script src="script.js"></script>
 </body>
+
 </html>
