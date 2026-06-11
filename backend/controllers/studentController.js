@@ -3,55 +3,38 @@
  * ─────────────────────────────────────────────────────────
  * All business logic for the Student resource.
  * Each exported function maps 1-to-1 to a route handler.
- *
- * Functions:
- *   createStudent    POST   /api/students
- *   getStudents      GET    /api/students
- *   getStudentById   GET    /api/students/:id
- *   updateStudent    PUT    /api/students/:id
- *   deleteStudent    DELETE /api/students/:id
- *   searchStudents   GET    /api/students/search?q=
- *   getStats         GET    /api/students/stats
  */
 
 const mongoose = require('mongoose');
 const Student  = require('../models/Student');
+const ActivityLog = require('../models/ActivityLog');
 
 /* ─────────────────────────────────────────────────────────
    HELPER — strip and sanitise a plain-text search term
 ───────────────────────────────────────────────────────── */
-/**
- * Escape special regex characters from user input to prevent
- * ReDoS (Regular Expression Denial of Service) attacks.
- * @param {string} str
- * @returns {string}
- */
 const escapeRegex = (str) =>
   str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 /* ─────────────────────────────────────────────────────────
-   HELPER — format Mongoose validation errors into a
-   single human-readable string.
+   HELPER — format Mongoose validation errors
 ───────────────────────────────────────────────────────── */
 const formatValidationErrors = (err) => {
   const messages = Object.values(err.errors).map((e) => e.message);
   return messages.join('. ');
 };
 
+const calculatePlacementStatus = (cgpa, activeBacklogs) => {
+  return (cgpa >= 7.0 && activeBacklogs === 0) ? 'Eligible' : 'Not Eligible';
+};
+
 /* ─────────────────────────────────────────────────────────
    1. CREATE STUDENT
    POST /api/students
 ───────────────────────────────────────────────────────── */
-/**
- * @route   POST /api/students
- * @desc    Create a new student record
- * @access  Public
- */
 const createStudent = async (req, res, next) => {
   try {
-    const { studentId, name, email, course, semester, phone } = req.body;
+    const { studentId, name, email, course, semester, phone, cgpa, activeBacklogs, skills, photoUrl } = req.body;
 
-    /* ── Basic presence check before hitting Mongoose ── */
     const missingFields = [];
     if (!studentId) missingFields.push('studentId');
     if (!name)      missingFields.push('name');
@@ -67,7 +50,6 @@ const createStudent = async (req, res, next) => {
       });
     }
 
-    /* ── Check for duplicate studentId (case-insensitive) ── */
     const existingById = await Student.findOne({
       studentId: studentId.toString().trim().toUpperCase(),
     });
@@ -78,7 +60,6 @@ const createStudent = async (req, res, next) => {
       });
     }
 
-    /* ── Check for duplicate email ── */
     const existingByEmail = await Student.findOne({
       email: email.toString().trim().toLowerCase(),
     });
@@ -89,7 +70,6 @@ const createStudent = async (req, res, next) => {
       });
     }
 
-    /* ── Create and save ── */
     const student = await Student.create({
       studentId,
       name,
@@ -97,6 +77,16 @@ const createStudent = async (req, res, next) => {
       course,
       semester,
       phone,
+      cgpa: cgpa || 0,
+      activeBacklogs: activeBacklogs || 0,
+      skills: skills || [],
+      photoUrl: photoUrl || '',
+    });
+
+    await ActivityLog.create({
+      action: 'Student Created',
+      studentName: student.name,
+      studentId: student.studentId,
     });
 
     return res.status(201).json({
@@ -105,14 +95,12 @@ const createStudent = async (req, res, next) => {
       data:    student,
     });
   } catch (err) {
-    /* Mongoose validation errors → 400 */
     if (err.name === 'ValidationError') {
       return res.status(400).json({
         success: false,
         message: formatValidationErrors(err),
       });
     }
-    /* Duplicate key (race condition after our manual check) */
     if (err.code === 11000) {
       const field = Object.keys(err.keyValue)[0];
       return res.status(409).json({
@@ -125,22 +113,79 @@ const createStudent = async (req, res, next) => {
 };
 
 /* ─────────────────────────────────────────────────────────
-   2. GET ALL STUDENTS
+   2. GET ALL STUDENTS (With Pagination, Sorting, Filters)
    GET /api/students
 ───────────────────────────────────────────────────────── */
-/**
- * @route   GET /api/students
- * @desc    Retrieve all students, newest first
- * @access  Public
- */
 const getStudents = async (req, res, next) => {
   try {
-    const students = await Student.find({}).sort({ createdAt: -1 });
+    const { 
+      page = 1, 
+      limit = 10, 
+      q, 
+      branch, 
+      semester, 
+      placementStatus, 
+      cgpaMin, 
+      cgpaMax,
+      sortField = 'createdAt',
+      sortDir = 'desc'
+    } = req.query;
+
+    const query = {};
+
+    // Search query
+    if (q) {
+      const safeQuery = escapeRegex(q.toString().trim());
+      const regex     = new RegExp(safeQuery, 'i');
+      query.$or = [
+        { studentId: regex },
+        { name:      regex },
+        { email:     regex },
+        { course:    regex },
+        { phone:     regex },
+      ];
+    }
+
+    // Advanced Filters
+    if (branch && branch !== 'all') {
+      query.course = new RegExp(escapeRegex(branch.trim()), 'i');
+    }
+    if (semester && semester !== 'all') {
+      query.semester = Number(semester);
+    }
+    if (placementStatus && placementStatus !== 'all') {
+      query.placementStatus = placementStatus;
+    }
+    if (cgpaMin !== undefined || cgpaMax !== undefined) {
+      query.cgpa = {};
+      if (cgpaMin !== undefined) query.cgpa.$gte = Number(cgpaMin);
+      if (cgpaMax !== undefined) query.cgpa.$lte = Number(cgpaMax);
+    }
+
+    // Pagination setup
+    const pageNum = parseInt(page, 10);
+    const limitNum = parseInt(limit, 10);
+    const skip = (pageNum - 1) * limitNum;
+
+    // Sorting setup
+    const sortOptions = {};
+    const dir = sortDir === 'asc' ? 1 : -1;
+    if (sortField === 'id') sortOptions.studentId = dir;
+    else sortOptions[sortField] = dir;
+
+    const students = await Student.find(query)
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(limitNum);
+
+    const totalStudents = await Student.countDocuments(query);
 
     return res.status(200).json({
       success: true,
-      count:   students.length,
-      data:    students,
+      data: students,
+      currentPage: pageNum,
+      totalPages: Math.ceil(totalStudents / limitNum),
+      totalStudents,
     });
   } catch (err) {
     next(err);
@@ -151,17 +196,17 @@ const getStudents = async (req, res, next) => {
    3. GET SINGLE STUDENT
    GET /api/students/:id
 ───────────────────────────────────────────────────────── */
-/**
- * @route   GET /api/students/:id
- * @desc    Get a single student by MongoDB ObjectId
- * @access  Public
- */
 const getStudentById = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    /* Validate that :id is a valid MongoDB ObjectId */
     if (!mongoose.Types.ObjectId.isValid(id)) {
+      // Maybe the id is a studentId string instead of ObjectId
+      const studentByStrId = await Student.findOne({ studentId: id });
+      if (studentByStrId) {
+        return res.status(200).json({ success: true, data: studentByStrId });
+      }
+
       return res.status(400).json({
         success: false,
         message: 'Invalid student ID format',
@@ -190,46 +235,46 @@ const getStudentById = async (req, res, next) => {
    4. UPDATE STUDENT
    PUT /api/students/:id
 ───────────────────────────────────────────────────────── */
-/**
- * @route   PUT /api/students/:id
- * @desc    Update a student's mutable fields (studentId is locked)
- * @access  Public
- */
 const updateStudent = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({
+    let studentToUpdate;
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      studentToUpdate = await Student.findById(id);
+    } else {
+      studentToUpdate = await Student.findOne({ studentId: id });
+    }
+
+    if (!studentToUpdate) {
+      return res.status(404).json({
         success: false,
-        message: 'Invalid student ID format',
+        message: 'Student not found',
       });
     }
 
-    /* Only allow updating these mutable fields */
-    const { name, email, course, semester, phone } = req.body;
+    const { name, email, course, semester, phone, cgpa, activeBacklogs, skills, photoUrl } = req.body;
 
-    /* At least one updatable field must be provided */
-    if (!name && !email && !course && semester === undefined && !phone) {
-      return res.status(400).json({
-        success: false,
-        message: 'Please provide at least one field to update',
-      });
-    }
-
-    /* Build the update payload — only include provided fields */
     const updateData = {};
-    if (name     !== undefined) updateData.name     = name;
-    if (email    !== undefined) updateData.email    = email;
-    if (course   !== undefined) updateData.course   = course;
+    if (name !== undefined) updateData.name = name;
+    if (email !== undefined) updateData.email = email;
+    if (course !== undefined) updateData.course = course;
     if (semester !== undefined) updateData.semester = semester;
-    if (phone    !== undefined) updateData.phone    = phone;
+    if (phone !== undefined) updateData.phone = phone;
+    if (cgpa !== undefined) updateData.cgpa = cgpa;
+    if (activeBacklogs !== undefined) updateData.activeBacklogs = activeBacklogs;
+    if (skills !== undefined) updateData.skills = skills;
+    if (photoUrl !== undefined) updateData.photoUrl = photoUrl;
 
-    /* Check for duplicate email if email is being changed */
+    // Calculate placement status
+    const newCgpa = cgpa !== undefined ? cgpa : studentToUpdate.cgpa;
+    const newBacklogs = activeBacklogs !== undefined ? activeBacklogs : studentToUpdate.activeBacklogs;
+    updateData.placementStatus = calculatePlacementStatus(newCgpa, newBacklogs);
+
     if (email) {
       const emailConflict = await Student.findOne({
         email: email.toString().trim().toLowerCase(),
-        _id:   { $ne: id },
+        _id:   { $ne: studentToUpdate._id },
       });
       if (emailConflict) {
         return res.status(409).json({
@@ -239,26 +284,25 @@ const updateStudent = async (req, res, next) => {
       }
     }
 
-    const student = await Student.findByIdAndUpdate(
-      id,
+    const updatedStudent = await Student.findByIdAndUpdate(
+      studentToUpdate._id,
       updateData,
       {
-        new:          true,  // Return the updated document
-        runValidators: true, // Run schema validators on update
+        new:          true,
+        runValidators: true,
       }
     );
 
-    if (!student) {
-      return res.status(404).json({
-        success: false,
-        message: 'Student not found',
-      });
-    }
+    await ActivityLog.create({
+      action: 'Student Updated',
+      studentName: updatedStudent.name,
+      studentId: updatedStudent.studentId,
+    });
 
     return res.status(200).json({
       success: true,
       message: 'Student record updated successfully',
-      data:    student,
+      data:    updatedStudent,
     });
   } catch (err) {
     if (err.name === 'ValidationError') {
@@ -282,23 +326,16 @@ const updateStudent = async (req, res, next) => {
    5. DELETE STUDENT
    DELETE /api/students/:id
 ───────────────────────────────────────────────────────── */
-/**
- * @route   DELETE /api/students/:id
- * @desc    Permanently delete a student record
- * @access  Public
- */
 const deleteStudent = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid student ID format',
-      });
+    let student;
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      student = await Student.findByIdAndDelete(id);
+    } else {
+      student = await Student.findOneAndDelete({ studentId: id });
     }
-
-    const student = await Student.findByIdAndDelete(id);
 
     if (!student) {
       return res.status(404).json({
@@ -306,6 +343,12 @@ const deleteStudent = async (req, res, next) => {
         message: 'Student not found',
       });
     }
+
+    await ActivityLog.create({
+      action: 'Student Deleted',
+      studentName: student.name,
+      studentId: student.studentId,
+    });
 
     return res.status(200).json({
       success: true,
@@ -320,86 +363,42 @@ const deleteStudent = async (req, res, next) => {
 /* ─────────────────────────────────────────────────────────
    6. SEARCH STUDENTS
    GET /api/students/search?q=value
+   (Kept for backwards compatibility if needed, but getStudents handles it now)
 ───────────────────────────────────────────────────────── */
-/**
- * @route   GET /api/students/search
- * @desc    Search students by studentId, name, email, course, or phone
- * @access  Public
- * @query   q {string} - search term
- */
 const searchStudents = async (req, res, next) => {
-  try {
-    const { q } = req.query;
-
-    if (!q || !q.toString().trim()) {
-      return res.status(400).json({
-        success: false,
-        message: 'Please provide a search query using the "q" parameter',
-      });
-    }
-
-    const safeQuery = escapeRegex(q.toString().trim());
-    const regex     = new RegExp(safeQuery, 'i'); // Case-insensitive
-
-    const students = await Student.find({
-      $or: [
-        { studentId: regex },
-        { name:      regex },
-        { email:     regex },
-        { course:    regex },
-        { phone:     regex },
-      ],
-    }).sort({ createdAt: -1 });
-
-    return res.status(200).json({
-      success: true,
-      count:   students.length,
-      query:   q,
-      data:    students,
-    });
-  } catch (err) {
-    next(err);
-  }
+  // Delegate to getStudents
+  return getStudents(req, res, next);
 };
 
 /* ─────────────────────────────────────────────────────────
    7. DASHBOARD STATISTICS
    GET /api/students/stats
 ───────────────────────────────────────────────────────── */
-/**
- * @route   GET /api/students/stats
- * @desc    Return aggregated dashboard statistics
- * @access  Public
- */
 const getStats = async (req, res, next) => {
   try {
-    /* Run all aggregation queries in parallel for performance */
     const [
       totalStudents,
       courseAgg,
       semesterAgg,
       latestStudentAgg,
+      placementAgg,
+      backlogAgg,
+      cgpaAgg
     ] = await Promise.all([
-      /* Count of all students */
       Student.countDocuments(),
-
-      /* Distinct course count */
       Student.aggregate([
-        {
-          $group: {
-            _id: { $toLower: { $trim: { input: '$course' } } },
-          },
-        },
+        { $group: { _id: { $toLower: { $trim: { input: '$course' } } } } },
         { $count: 'totalCourses' },
       ]),
-
-      /* Maximum semester value */
       Student.aggregate([
         { $group: { _id: null, highestSemester: { $max: '$semester' } } },
       ]),
-
-      /* Most recently added student */
       Student.findOne({}).sort({ createdAt: -1 }).select('name studentId createdAt'),
+      Student.countDocuments({ placementStatus: 'Eligible' }),
+      Student.countDocuments({ activeBacklogs: { $gt: 0 } }),
+      Student.aggregate([
+        { $group: { _id: null, avgCgpa: { $avg: '$cgpa' } } }
+      ])
     ]);
 
     const totalCourses    = courseAgg[0]?.totalCourses    ?? 0;
@@ -407,6 +406,7 @@ const getStats = async (req, res, next) => {
     const latestStudent   = latestStudentAgg
       ? { name: latestStudentAgg.name, studentId: latestStudentAgg.studentId }
       : null;
+    const avgCgpa = cgpaAgg[0]?.avgCgpa ?? 0;
 
     return res.status(200).json({
       success: true,
@@ -416,6 +416,9 @@ const getStats = async (req, res, next) => {
         highestSemester,
         latestStudent: latestStudent ? latestStudent.name : '—',
         latestStudentId: latestStudent ? latestStudent.studentId : null,
+        placementEligible: placementAgg,
+        studentsWithBacklogs: backlogAgg,
+        avgCgpa: Number(avgCgpa.toFixed(2))
       },
     });
   } catch (err) {
@@ -423,7 +426,6 @@ const getStats = async (req, res, next) => {
   }
 };
 
-/* ─── Exports ─── */
 module.exports = {
   createStudent,
   getStudents,

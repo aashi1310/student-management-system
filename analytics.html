@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Analytics — Student Management System</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div id="toast-container" role="alert" aria-live="polite" aria-atomic="false"></div>
+
+  <header class="header" role="banner">
+    <div class="header-inner">
+      <div class="header-brand">
+        <div class="header-logo" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        </div>
+        <div class="header-title-group">
+          <h1 class="header-title">Student Management System</h1>
+          <span class="header-subtitle">Academic Records Portal</span>
+        </div>
+      </div>
+      <nav class="header-nav" aria-label="Main Navigation">
+        <a href="/" class="nav-link">Dashboard</a>
+        <a href="/analytics" class="nav-link active">Analytics</a>
+        <a href="/activity" class="nav-link">Activity Logs</a>
+      </nav>
+      <div class="header-actions">
+        <span id="current-date" class="header-date"></span>
+        <button id="dark-mode-toggle" class="dark-toggle" onclick="toggleDarkMode()" aria-label="Toggle dark mode">
+          <span class="dark-toggle-icon dark-toggle-sun"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></span>
+          <span class="dark-toggle-icon dark-toggle-moon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div style="max-width: 1440px; margin: 0 auto;">
+      <h2 style="margin-bottom: 1.5rem; color: var(--clr-text-primary);">Branch Analytics</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem;">
+        
+        <div class="card" style="padding: 1.5rem;">
+          <h3 style="margin-bottom: 1rem; color: var(--clr-text-secondary);">Students per Branch</h3>
+          <canvas id="branchDistributionChart"></canvas>
+        </div>
+
+        <div class="card" style="padding: 1.5rem;">
+          <h3 style="margin-bottom: 1rem; color: var(--clr-text-secondary);">Average CGPA by Branch</h3>
+          <canvas id="avgCgpaChart"></canvas>
+        </div>
+
+        <div class="card" style="padding: 1.5rem; grid-column: 1 / -1;">
+          <h3 style="margin-bottom: 1rem; color: var(--clr-text-secondary);">Placement Eligibility by Branch</h3>
+          <canvas id="placementEligibilityChart" style="max-height: 400px;"></canvas>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+  <script src="analytics.js"></script>
+</body>
+</html>

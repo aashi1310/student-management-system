@@ -84,6 +84,41 @@ const studentSchema = new mongoose.Schema(
         message:   'Phone number must be exactly 10 digits',
       },
     },
+
+    /* ── CGPA ─────────────────────────────────────────── */
+    cgpa: {
+      type:     Number,
+      min:      [0, 'CGPA cannot be less than 0'],
+      max:      [10, 'CGPA cannot exceed 10'],
+      default:  0,
+    },
+
+    /* ── Active Backlogs ──────────────────────────────── */
+    activeBacklogs: {
+      type:     Number,
+      min:      [0, 'Active backlogs cannot be negative'],
+      default:  0,
+    },
+
+    /* ── Skills ───────────────────────────────────────── */
+    skills: {
+      type:     [String],
+      default:  [],
+    },
+
+    /* ── Photo URL ────────────────────────────────────── */
+    photoUrl: {
+      type:     String,
+      trim:     true,
+      default:  '',
+    },
+
+    /* ── Placement Status ─────────────────────────────── */
+    placementStatus: {
+      type:     String,
+      enum:     ['Eligible', 'Not Eligible'],
+      default:  'Not Eligible',
+    },
   },
   {
     /* Automatically add createdAt and updatedAt fields */
@@ -106,6 +141,36 @@ studentSchema.index({
   email:     'text',
   course:    'text',
   phone:     'text',
+});
+
+/* ─── Helper function to calculate placement status ─── */
+const calculatePlacementStatus = (cgpa, activeBacklogs) => {
+  return (cgpa >= 7.0 && activeBacklogs === 0) ? 'Eligible' : 'Not Eligible';
+};
+
+/* ─── Pre-save hook ─── */
+studentSchema.pre('save', function (next) {
+  if (this.isModified('cgpa') || this.isModified('activeBacklogs')) {
+    this.placementStatus = calculatePlacementStatus(this.cgpa, this.activeBacklogs);
+  }
+  next();
+});
+
+/* ─── Pre-findOneAndUpdate hook ─── */
+studentSchema.pre('findOneAndUpdate', function (next) {
+  const update = this.getUpdate();
+  if (update.cgpa !== undefined || update.activeBacklogs !== undefined) {
+    // If one is not provided in update, we must get it from the current doc or default to not eligible if unknown
+    // To be perfectly accurate without querying the doc, we enforce passing both or rely on default controller logic.
+    // Assuming the controller passes both if updated, or we let the controller handle it explicitly.
+    // For safety, let's just use what's provided or skip if incomplete (controller handles it better).
+    // Actually, setting placementStatus in controller is safer for updates since hook doesn't have full doc.
+    // But we'll try to set it if both are provided.
+    if (update.cgpa !== undefined && update.activeBacklogs !== undefined) {
+      update.placementStatus = calculatePlacementStatus(update.cgpa, update.activeBacklogs);
+    }
+  }
+  next();
 });
 
 const Student = mongoose.model('Student', studentSchema);

@@ -18,6 +18,7 @@ require('dotenv').config();
 
 const express            = require('express');
 const cors               = require('cors');
+const path               = require('path');
 const connectDB          = require('./config/db');
 const studentRoutes      = require('./routes/studentRoutes');
 const notFoundMiddleware = require('./middleware/notFoundMiddleware');
@@ -64,6 +65,10 @@ app.use((_req, res, next) => {
   next();
 });
 
+/* ── Serve frontend static files ─────────────────────── */
+const frontendPath = path.join(__dirname, '..');
+app.use(express.static(frontendPath));
+
 /* ── 4. API Routes ───────────────────────────────────── */
 
 /**
@@ -85,6 +90,34 @@ app.get('/api/health', (_req, res) => {
  * Base URL: /api/students
  */
 app.use('/api/students', studentRoutes);
+
+/**
+ * Activity Log resource routes.
+ * Base URL: /api/logs
+ */
+const activityLogRoutes = require('./routes/activityLogRoutes');
+app.use('/api/logs', activityLogRoutes);
+
+/**
+ * Analytics resource routes.
+ * Base URL: /api/analytics
+ */
+const analyticsRoutes = require('./routes/analyticsRoutes');
+app.use('/api/analytics', analyticsRoutes);
+
+/* ── Frontend Page Routes ────────────────────────────── */
+
+app.get('/analytics', (req, res) => {
+  res.sendFile(path.join(frontendPath, 'analytics.html'));
+});
+
+app.get('/activity', (req, res) => {
+  res.sendFile(path.join(frontendPath, 'activity.html'));
+});
+
+app.get('/student/:id', (req, res) => {
+  res.sendFile(path.join(frontendPath, 'profile.html'));
+});
 
 /* ── 5. Error-handling middleware ────────────────────── */
 /* Must come AFTER routes */
